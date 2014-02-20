@@ -28,12 +28,6 @@ global.PACKER = function() {'use strict';
 	// server script
 	serverScript = '',
 
-	// css
-	css = '',
-
-	// secured css
-	securedCSS = '',
-
 	// log.
 	log = function(msg) {
 		console.log('PACKER: ' + msg);
@@ -159,11 +153,6 @@ global.PACKER = function() {'use strict';
 
 			// add to browser script.
 			browserScript += content + '\n';
-
-		} else if (extname === '.css') {
-
-			// add to css.
-			css += content;
 		}
 	},
 
@@ -182,11 +171,6 @@ global.PACKER = function() {'use strict';
 
 			// add to secured browser script.
 			securedBrowserScript += fs.readFileSync(absolutePath) + '\n';
-
-		} else if (extname === '.css') {
-
-			// add to secured css.
-			securedCSS += fs.readFileSync(absolutePath) + '\n';
 		}
 	},
 
@@ -237,10 +221,7 @@ global.PACKER = function() {'use strict';
 
 		var
 		// uglify-js
-		uglifyJS = require(rootPath + '/UPPERCASE/SERVER/node_modules/uglify-js'),
-
-		// sqwish
-		sqwish = require(rootPath + '/UPPERCASE/SERVER/node_modules/sqwish');
+		uglifyJS = require(rootPath + '/UPPERCASE/SERVER/node_modules/uglify-js');
 
 		// minify browser script.
 		browserScript = uglifyJS.minify(browserScript, {
@@ -265,12 +246,6 @@ global.PACKER = function() {'use strict';
 			fromString : true,
 			mangle : true
 		}).code;
-
-		// minify css.
-		css = sqwish.minify(css);
-
-		// minify secured css.
-		securedCSS = sqwish.minify(securedCSS);
 	};
 
 	// pack box.
@@ -325,32 +300,12 @@ global.PACKER = function() {'use strict';
 		log('SAVED BROWSER SCRIPT!');
 	}
 
-	// save browser css.
-	if (css !== '') {
-		log('SAVING BROWSER CSS...');
-		if (fs.existsSync('__PACK/' + boxName + '/BROWSER') === false) {
-			fs.mkdirSync('__PACK/' + boxName + '/BROWSER');
-		}
-		write('__PACK/' + boxName + '/BROWSER/BROWSER.css', css);
-		log('SAVED BROWSER CSS!');
-	}
-
 	// save browser secured script.
 	if (securedBrowserScript !== '') {
 		log('SAVING BROWSER SECURED SCRIPT...');
 		fs.mkdirSync('__PACK/' + boxName + '/BROWSER_SECURED');
 		write('__PACK/' + boxName + '/BROWSER_SECURED/BROWSER_SECURED.js', securedBrowserScript);
 		log('SAVED BROWSER SECURED SCRIPT!');
-	}
-
-	// save browser secured css.
-	if (securedCSS !== '') {
-		log('SAVING BROWSER SECURED CSS...');
-		if (fs.existsSync('__PACK/' + boxName + '/BROWSER_SECURED') === false) {
-			fs.mkdirSync('__PACK/' + boxName + '/BROWSER_SECURED');
-		}
-		write('__PACK/' + boxName + '/BROWSER_SECURED/BROWSER_SECURED.css', securedCSS);
-		log('SAVED BROWSER SECURED CSS!');
 	}
 
 	// save common script.
